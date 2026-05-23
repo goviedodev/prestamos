@@ -1,0 +1,164 @@
+<div class="mx-auto max-w-4xl px-4 py-8">
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h1 class="text-3xl font-bold tracking-tight">Préstamos</h1>
+      <p class="text-base-content/60 mt-1">Gestiona tus préstamos personales</p>
+    </div>
+    <.link navigate={~p"/new"} class="btn btn-primary">
+      + Nuevo Préstamo
+    </.link>
+  </div>
+
+  <%= if @live_action in [:new, :edit] do %>
+    <div class="card bg-base-200 shadow-sm mb-8">
+      <div class="card-body">
+        <h2 class="card-title text-lg mb-4">
+          <%= if @editing_loan, do: "Editar Préstamo", else: "Nuevo Préstamo" %>
+        </h2>
+
+        <.form
+          for={@form}
+          id="loan-form"
+          phx-submit="save"
+        >
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="fieldset">
+              <label for="person_name" class="label">Nombre de la persona</label>
+              <input
+                type="text"
+                name="loan[person_name]"
+                id="person_name"
+                value={@form[:person_name].value}
+                class="input w-full"
+                placeholder="Ej: Juan Pérez"
+                required
+              />
+            </div>
+
+            <div class="fieldset">
+              <label for="amount" class="label">Monto</label>
+              <input
+                type="number"
+                name="loan[amount]"
+                id="amount"
+                value={@form[:amount].value}
+                class="input w-full"
+                placeholder="Ej: 1500.00"
+                step="0.01"
+                min="0.01"
+                required
+              />
+            </div>
+
+            <div class="fieldset">
+              <label for="date" class="label">Fecha</label>
+              <input
+                type="date"
+                name="loan[date]"
+                id="date"
+                value={@form[:date].value}
+                class="input w-full"
+                required
+              />
+            </div>
+
+            <div class="fieldset">
+              <label class="label">Estado</label>
+              <div class="flex items-center gap-3 h-[2.5rem]">
+                <input type="hidden" name="loan[paid]" value="false" />
+                <input
+                  type="checkbox"
+                  name="loan[paid]"
+                  id="paid"
+                  value="true"
+                  checked={@form[:paid].value == true}
+                  class="checkbox checkbox-primary"
+                />
+                <label for="paid" class="cursor-pointer">Pagado</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-3 mt-6">
+            <button type="submit" class="btn btn-primary">
+              <%= if @editing_loan, do: "Guardar Cambios", else: "Crear Préstamo" %>
+            </button>
+            <.link patch={~p"/"} class="btn btn-ghost">Cancelar</.link>
+          </div>
+        </.form>
+      </div>
+    </div>
+  <% end %>
+
+  <%= if @loans == [] do %>
+    <div class="text-center py-16">
+      <div class="text-6xl mb-4">💰</div>
+      <h2 class="text-xl font-semibold mb-2">No hay préstamos aún</h2>
+      <p class="text-base-content/60 mb-6">Crea tu primer préstamo para empezar</p>
+      <.link navigate={~p"/new"} class="btn btn-primary btn-lg">
+        + Crear Primer Préstamo
+      </.link>
+    </div>
+  <% else %>
+    <div class="overflow-x-auto">
+      <table class="table table-zebra w-full">
+        <thead>
+          <tr>
+            <th class="w-10"></th>
+            <th>Persona</th>
+            <th class="text-right">Monto</th>
+            <th>Fecha</th>
+            <th class="text-center">Estado</th>
+            <th class="text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr :for={loan <- @loans} id={"loan-#{loan.id}"}>
+            <td>
+              <div class={[
+                "w-2 h-2 rounded-full",
+                if(loan.paid, do: "bg-success", else: "bg-warning")
+              ]} />
+            </td>
+            <td class="font-medium">{loan.person_name}</td>
+            <td class="text-right font-mono tabular-nums">
+              ${format_amount(loan.amount)}
+            </td>
+            <td>{loan.date}</td>
+            <td class="text-center">
+              <button
+                phx-click="toggle-paid"
+                phx-value-id={loan.id}
+                class={[
+                  "badge cursor-pointer transition-all",
+                  loan.paid && "badge-success",
+                  !loan.paid && "badge-warning"
+                ]}
+              >
+                {if loan.paid, do: "Pagado", else: "Pendiente"}
+              </button>
+            </td>
+            <td class="text-right">
+              <div class="flex gap-2 justify-end">
+                <.link
+                  patch={~p"/#{loan.id}/edit"}
+                  class="btn btn-ghost btn-xs"
+                >
+                  Editar
+                </.link>
+                <button
+                  phx-click="delete"
+                  phx-value-id={loan.id}
+                  class="btn btn-ghost btn-xs text-error"
+                  data-confirm="¿Eliminar este préstamo?"
+                >
+                  Eliminar
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>
