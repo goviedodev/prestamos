@@ -10,6 +10,7 @@ services:
       SECRET_KEY_BASE: "MfWPFd8YBQ5Q5FnGE5ETmsjbk2Efc3FG/3a/uDTN7R5nyUezwnV5RZiK+soDj8f0"
       DATABASE_PATH: "/app/data/prestamos.db"
       PHX_SERVER: "true"
+      CHECK_ORIGIN: "false"
     volumes:
       - prestamos_data:/app/data
     restart: unless-stopped
