@@ -5,7 +5,7 @@ services:
     build: .
     container_name: prestamos-app
     ports:
-      - "4000:4000"
+      - "14000:4000"
     environment:
       PHX_HOST: "localhost"
       PORT: "4000"
