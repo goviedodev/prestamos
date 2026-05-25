@@ -18,7 +18,7 @@ defmodule PrestamosWeb.Router do
     pipe_through :browser
 
     live "/", LoanLive.Index, :index
-    live "/new", LoanLive.Index, :new
+    live "/resume", LoanLive.Index, :resume
     live "/:id/edit", LoanLive.Index, :edit
   end
 

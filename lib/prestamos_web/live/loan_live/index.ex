@@ -36,7 +36,7 @@ defmodule PrestamosWeb.LoanLive.Index do
     |> assign(:page_title, "Editar Préstamo")
   end
 
-  defp apply_action(socket, :new, _params) do
+  defp apply_action(socket, :resume, _params) do
     loans = socket.assigns.loans
     total_loans = length(loans)
     paid = Enum.filter(loans, & &1.paid)

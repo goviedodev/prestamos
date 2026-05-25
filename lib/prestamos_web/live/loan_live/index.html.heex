@@ -5,7 +5,7 @@
       <p class="text-base-content/60 mt-1">Gestiona tus préstamos personales</p>
     </div>
     <div class="flex gap-2">
-      <.link patch={~p"/new"} class="btn btn-ghost btn-sm">
+      <.link patch={~p"/resume"} class="btn btn-ghost btn-sm">
         📊 Resumen
       </.link>
       <.link patch={~p"/?form=new"} class="btn btn-primary">
@@ -95,7 +95,7 @@
     </div>
   <% end %>
 
-  <%= if @live_action == :new do %>
+  <%= if @live_action == :resume do %>
     <div class="card bg-base-200 shadow-sm mb-8">
       <div class="card-body">
         <div class="flex items-center justify-between mb-6">
