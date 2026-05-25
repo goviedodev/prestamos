@@ -14,6 +14,8 @@ defmodule PrestamosWeb.LoanLive.Index do
       |> assign(:loans, loans)
       |> assign(:form, to_form(changeset))
       |> assign(:editing_loan, nil)
+      |> assign(:summary, nil)
+      |> assign(:show_new_form, false)
       |> assign(:page_title, "Préstamos")
 
     {:ok, socket}
@@ -35,16 +37,32 @@ defmodule PrestamosWeb.LoanLive.Index do
   end
 
   defp apply_action(socket, :new, _params) do
-    changeset = Loan.changeset(%Loan{}, %{})
+    loans = socket.assigns.loans
+    total_loans = length(loans)
+    paid = Enum.filter(loans, & &1.paid)
+    pending = Enum.filter(loans, & !&1.paid)
+
+    summary = %{
+      total_loans: total_loans,
+      total_amount: Enum.reduce(loans, Decimal.new(0), fn l, acc -> Decimal.add(acc, l.amount) end),
+      paid_count: length(paid),
+      paid_amount: Enum.reduce(paid, Decimal.new(0), fn l, acc -> Decimal.add(acc, l.amount) end),
+      pending_count: length(pending),
+      pending_amount: Enum.reduce(pending, Decimal.new(0), fn l, acc -> Decimal.add(acc, l.amount) end)
+    }
 
     socket
+    |> assign(:summary, summary)
     |> assign(:editing_loan, nil)
-    |> assign(:form, to_form(changeset))
-    |> assign(:page_title, "Nuevo Préstamo")
+    |> assign(:form, to_form(Loan.changeset(%Loan{}, %{})))
+    |> assign(:page_title, "Resumen")
   end
 
-  defp apply_action(socket, :index, _params) do
+  defp apply_action(socket, :index, params) do
+    show_form = Map.get(params, "form") == "new"
+
     socket
+    |> assign(:show_new_form, show_form)
     |> assign(:editing_loan, nil)
     |> assign(:form, to_form(Loan.changeset(%Loan{}, %{})))
     |> assign(:page_title, "Préstamos")

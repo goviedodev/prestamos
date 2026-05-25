@@ -4,16 +4,21 @@
       <h1 class="text-3xl font-bold tracking-tight">Préstamos</h1>
       <p class="text-base-content/60 mt-1">Gestiona tus préstamos personales</p>
     </div>
-    <.link navigate={~p"/new"} class="btn btn-primary">
-      + Nuevo Préstamo
-    </.link>
+    <div class="flex gap-2">
+      <.link patch={~p"/new"} class="btn btn-ghost btn-sm">
+        📊 Resumen
+      </.link>
+      <.link patch={~p"/?form=new"} class="btn btn-primary">
+        + Nuevo Préstamo
+      </.link>
+    </div>
   </div>
 
-  <%= if @live_action in [:new, :edit] do %>
+  <%= if @live_action == :edit or @show_new_form do %>
     <div class="card bg-base-200 shadow-sm mb-8">
       <div class="card-body">
         <h2 class="card-title text-lg mb-4">
-          <%= if @editing_loan, do: "Editar Préstamo", else: "Nuevo Préstamo" %>
+          <%= if @live_action == :edit, do: "Editar Préstamo", else: "Nuevo Préstamo" %>
         </h2>
 
         <.form
@@ -81,11 +86,53 @@
 
           <div class="flex gap-3 mt-6">
             <button type="submit" class="btn btn-primary">
-              <%= if @editing_loan, do: "Guardar Cambios", else: "Crear Préstamo" %>
+              <%= if @live_action == :edit, do: "Guardar Cambios", else: "Crear Préstamo" %>
             </button>
             <.link patch={~p"/"} class="btn btn-ghost">Cancelar</.link>
           </div>
         </.form>
+      </div>
+    </div>
+  <% end %>
+
+  <%= if @live_action == :new do %>
+    <div class="card bg-base-200 shadow-sm mb-8">
+      <div class="card-body">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="card-title text-lg">📊 Resumen de Préstamos</h2>
+          <.link navigate={~p"/"} class="btn btn-ghost btn-sm">
+            ← Volver
+          </.link>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          <div class="stat bg-base-100 rounded-box p-4">
+            <div class="stat-title text-sm">Total Préstamos</div>
+            <div class="stat-value text-2xl"><%= @summary.total_loans %></div>
+            <div class="stat-desc text-xs">Monto total: $<%= format_amount(@summary.total_amount) %></div>
+          </div>
+          <div class="stat bg-base-100 rounded-box p-4">
+            <div class="stat-title text-sm">Pagados</div>
+            <div class="stat-value text-2xl text-success"><%= @summary.paid_count %></div>
+            <div class="stat-desc text-xs">$<%= format_amount(@summary.paid_amount) %></div>
+          </div>
+          <div class="stat bg-base-100 rounded-box p-4">
+            <div class="stat-title text-sm">Pendientes</div>
+            <div class="stat-value text-2xl text-warning"><%= @summary.pending_count %></div>
+            <div class="stat-desc text-xs">$<%= format_amount(@summary.pending_amount) %></div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-sm">
+          <span class="text-base-content/60">
+            <%= if @summary.total_loans == 0 do %>
+              No hay préstamos registrados.
+            <% else %>
+              <% pct = if @summary.total_loans > 0, do: round(@summary.paid_count / @summary.total_loans * 100), else: 0 %>
+              <%= pct %>% de préstamos pagados
+            <% end %>
+          </span>
+        </div>
       </div>
     </div>
   <% end %>
@@ -95,7 +142,7 @@
       <div class="text-6xl mb-4">💰</div>
       <h2 class="text-xl font-semibold mb-2">No hay préstamos aún</h2>
       <p class="text-base-content/60 mb-6">Crea tu primer préstamo para empezar</p>
-      <.link navigate={~p"/new"} class="btn btn-primary btn-lg">
+      <.link patch={~p"/?form/new"} class="btn btn-primary btn-lg">
         + Crear Primer Préstamo
       </.link>
     </div>

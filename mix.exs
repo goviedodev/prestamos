@@ -53,7 +53,8 @@ defmodule Prestamos.MixProject do
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
       {:phoenix_ecto, "~> 4.6"},
-      {:ecto_sqlite3, "~> 0.18"}
+      {:ecto_sqlite3, "~> 0.18"},
+      {:esbuild, "~> 0.8", runtime: Mix.env() == :dev}
     ]
   end
 
@@ -69,7 +70,8 @@ defmodule Prestamos.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      precommit: ["compile --warnings-as-errors", "deps.unlock --unused", "format", "test"]
+      precommit: ["compile --warnings-as-errors", "deps.unlock --unused", "format", "test"],
+      "assets.deploy": ["esbuild default --minify", "phx.digest"]
     ]
   end
 end

@@ -1,0 +1,11 @@
+{
+  "name": "prestamos",
+  "private": true,
+  "dependencies": {
+    "phoenix": "file:../deps/phoenix",
+    "phoenix_live_view": "file:../deps/phoenix_live_view"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}
