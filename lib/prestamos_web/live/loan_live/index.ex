@@ -3,6 +3,7 @@ defmodule PrestamosWeb.LoanLive.Index do
 
   alias Prestamos.Loans.Loan
   alias Prestamos.Repo
+  alias Prestamos.Utils
 
   @impl true
   def mount(_params, _session, socket) do
@@ -158,10 +159,4 @@ defmodule PrestamosWeb.LoanLive.Index do
     end
   end
 
-  defp format_amount(nil), do: "0.00"
-  defp format_amount(amount) do
-    amount
-    |> Decimal.round(2)
-    |> Decimal.to_string()
-  end
 end

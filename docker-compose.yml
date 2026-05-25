@@ -1,14 +1,12 @@
-version: "3.9"
-
 services:
   prestamos:
     build: .
     container_name: prestamos-app
     ports:
-      - "14000:4000"
+      - "14000:14000"
     environment:
       PHX_HOST: "localhost"
-      PORT: "4000"
+      PORT: "14000"
       SECRET_KEY_BASE: "MfWPFd8YBQ5Q5FnGE5ETmsjbk2Efc3FG/3a/uDTN7R5nyUezwnV5RZiK+soDj8f0"
       DATABASE_PATH: "/app/data/prestamos.db"
       PHX_SERVER: "true"

@@ -54,6 +54,8 @@ defmodule Prestamos.MixProject do
       {:bandit, "~> 1.5"},
       {:phoenix_ecto, "~> 4.6"},
       {:ecto_sqlite3, "~> 0.18"},
+      {:ex_cldr, "~> 2.37"},
+      {:ex_cldr_numbers, "~> 2.31"},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev}
     ]
   end

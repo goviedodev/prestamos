@@ -109,17 +109,17 @@
           <div class="stat bg-base-100 rounded-box p-4">
             <div class="stat-title text-sm">Total Préstamos</div>
             <div class="stat-value text-2xl"><%= @summary.total_loans %></div>
-            <div class="stat-desc text-xs">Monto total: $<%= format_amount(@summary.total_amount) %></div>
+            <div class="stat-desc text-xs">Monto total: <%= Utils.format_amount(@summary.total_amount) %></div>
           </div>
           <div class="stat bg-base-100 rounded-box p-4">
             <div class="stat-title text-sm">Pagados</div>
             <div class="stat-value text-2xl text-success"><%= @summary.paid_count %></div>
-            <div class="stat-desc text-xs">$<%= format_amount(@summary.paid_amount) %></div>
+            <div class="stat-desc text-xs"><%= Utils.format_amount(@summary.paid_amount) %></div>
           </div>
           <div class="stat bg-base-100 rounded-box p-4">
             <div class="stat-title text-sm">Pendientes</div>
             <div class="stat-value text-2xl text-warning"><%= @summary.pending_count %></div>
-            <div class="stat-desc text-xs">$<%= format_amount(@summary.pending_amount) %></div>
+            <div class="stat-desc text-xs"><%= Utils.format_amount(@summary.pending_amount) %></div>
           </div>
         </div>
 
@@ -169,7 +169,7 @@
             </td>
             <td class="font-medium">{loan.person_name}</td>
             <td class="text-right font-mono tabular-nums">
-              ${format_amount(loan.amount)}
+              {Utils.format_amount(loan.amount)}
             </td>
             <td>{loan.date}</td>
             <td class="text-center">

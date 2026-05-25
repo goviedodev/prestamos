@@ -1,7 +1,7 @@
 # ============================================
 # Stage 1: Build
 # ============================================
-FROM hexpm/elixir:1.18.2-erlang-27.3.1-alpine-3.21.3 AS build
+FROM hexpm/elixir:1.18.2-erlang-27.2-alpine-3.21.2 AS build
 
 # Install build dependencies
 RUN apk add --no-cache build-base git
@@ -41,8 +41,9 @@ RUN adduser -D appuser
 
 WORKDIR /app
 
-# Copy the release from the build stage
+# Copy the release and entrypoint from the build stage
 COPY --from=build /app/_build/prod/rel/prestamos ./
+COPY --from=build /app/entrypoint.sh ./
 
 # Set ownership
 RUN chown -R appuser:appuser /app
@@ -54,7 +55,7 @@ ENV DATABASE_PATH=/app/data/prestamos.db
 # Create data directory for SQLite
 RUN mkdir -p /app/data
 
-EXPOSE 4000
+EXPOSE 14000
 
-# Start the application
-CMD ["/app/bin/server"]
+# Start the application (run migrations, then start server)
+CMD ["/app/entrypoint.sh"]
