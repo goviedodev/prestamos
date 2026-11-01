@@ -21,6 +21,13 @@
 - Al generar con `mix phx.new`, el nombre se incrusta en múltiples archivos.
 - Más eficiente usar `sed` para reemplazar todas las ocurrencias que renombrar manualmente.
 
+### 5. Despliegue en FreeBSD Jail (`iocage`)
+- `DATABASE_PATH` debe leerse en `config/runtime.exs` para que los releases (`mix release`) usen la ruta de base de datos en tiempo de ejecución y no la de compilación.
+- En jails sin IPv6 asignado (`ip6=-`), Bandit debe escuchar en IPv4 `{0, 0, 0, 0}` en lugar de `{0, 0, 0, 0, 0, 0, 0, 0}`.
+- En jails no-VNET cuando el host usa `local_unbound` (`127.0.0.1`), es necesario configurar `resolver="nameserver 192.168.100.1;nameserver 8.8.8.8"` en `iocage`.
+- Cuando el pool ZFS de `iocage` (`goljailpool`) reside en un archivo (`mdconfig -a -t vnode -f /home/goviedo/iocage_storage`), se requiere un servicio `rc.d` previo a `iocage` para adjuntar el `md` e importar el pool al iniciar el host.
+- Para exponer el jail a la red Tailscale de `gonzalo-asus` (`gonzalo-asus:14000`) mediante `ssh -L`, es necesario especificar `0.0.0.0:14000:prestamos:14000` (para que no escuche solo en `127.0.0.1`) y definir `192.168.100.101 prestamos` también en `/etc/hosts` del servidor SSH remoto (`goacer`), ya que `ssh -L` resuelve el host destino desde el servidor SSH.
+
 ## Mejoras futuras
 - Agregar autenticación básica
 - Agregar búsqueda/filtros
